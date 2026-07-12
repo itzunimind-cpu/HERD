@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EAE3CC;font-family:'Noto Sans Devanagari','Roboto',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}
+</style>
+</helmet>
+<div style="padding:40px">
+<x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="412,892" style="display:block">
+  <div style="height:100%;width:100%;position:relative;overflow:hidden">
+
+    <!-- SIGN IN -->
+    <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ true }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box;padding:56px 28px 40px">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+            <div style="width:76px;height:76px;border-radius:50%;background:#9D6638;border:3px solid #4E220F;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(78,34,15,.35)">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M4 15c0-3 1.5-5 3-6-.3-1.2 0-2.5 1-3.3.6.7 1 1.5 1.1 2.3.6-.2 1.2-.3 1.9-.3s1.3.1 1.9.3c.1-.8.5-1.6 1.1-2.3 1 .8 1.3 2.1 1 3.3 1.5 1 3 3 3 6 0 3.3-3.6 6-8 6s-8-2.7-8-6Z" fill="#F7F1DE"/><circle cx="9.5" cy="14.5" r="1.1" fill="#4E220F"/><circle cx="14.5" cy="14.5" r="1.1" fill="#4E220F"/></svg>
+            </div>
+            <div style="font-size:26px;font-weight:800;color:#4E220F">Herd</div>
+            <div style="font-size:14px;font-weight:700;color:#9D6638">व्यवस्थापन अ‍ॅप</div>
+          </div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:13px;font-weight:800;color:#4E220F">वापरकर्तानाव</label>
+              <div style="height:52px;border-radius:14px;background:#fff;border:2px solid #4E220F;display:flex;align-items:center;padding:0 16px;font-size:15px;color:#7a5240">उदा. रामलाल पाटील</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:13px;font-weight:800;color:#4E220F">पासवर्ड</label>
+              <div style="height:52px;border-radius:14px;background:#fff;border:2px solid #4E220F;display:flex;align-items:center;padding:0 16px;font-size:15px;color:#7a5240">••••••••</div>
+            </div>
+            <div style="align-self:flex-end;font-size:13px;font-weight:800;color:#9D6638">पासवर्ड विसरलात?</div>
+          </div>
+        </div>
+        <div onClick="{{ signIn }}" style="height:56px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;box-shadow:0 8px 18px rgba(157,102,56,.4);cursor:pointer" style-hover="opacity:.9">साइन इन करा</div>
+      </div>
+    </sc-if>
+
+    <!-- HOME -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box;position:relative">
+        <div style="padding:20px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #4E220F;flex-shrink:0">
+          <div style="font-size:22px;font-weight:800;color:#4E220F">माझी गुरे</div>
+          <div onClick="{{ addCow }}" style="width:40px;height:40px;border-radius:50%;background:#4E220F;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <sc-if value="{{ hasCows }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ cows }}" as="cow" hint-placeholder-count="0">
+              <div onClick="{{ cow.open }}" style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;border:2px solid #4E220F;padding:14px 16px;box-shadow:0 3px 8px rgba(78,34,15,.15);cursor:pointer">
+                <div style="width:48px;height:48px;border-radius:50%;background:#B0BA99;border:2px solid #4E220F;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#4E220F;flex-shrink:0">{{ cow.tag }}</div>
+                <div style="flex:1">
+                  <div style="font-size:16px;font-weight:800;color:#4E220F">टॅग क्रमांक {{ cow.tag }}</div>
+                  <div style="font-size:13px;font-weight:600;color:#6b4a35">तपशील पाहण्यासाठी टॅप करा</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#9D6638" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:0 32px">
+            <div onClick="{{ addCow }}" style="width:100%;border:2.5px dashed #9D6638;border-radius:20px;padding:36px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:.6;cursor:pointer">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#9D6638" stroke-width="2.6" stroke-linecap="round"/></svg>
+              <div style="font-size:17px;font-weight:800;color:#9D6638">नवीन गाय जोडा</div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:#6b4a35;text-align:center">अजून कोणतीही गाय जोडलेली नाही</div>
+          </div>
+        </sc-if>
+        <div onClick="{{ goScan }}" style="position:absolute;right:22px;bottom:22px;width:64px;height:64px;border-radius:50%;background:#4E220F;border:3px solid #F7F1DE;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px rgba(78,34,15,.45);cursor:pointer">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2.5" stroke="#F7F1DE" stroke-width="1.8"/><path d="M8 7l1.5-2.5h5L16 7" stroke="#F7F1DE" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.4" stroke="#F7F1DE" stroke-width="1.8"/></svg>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- SCAN -->
+    <sc-if value="{{ isScan }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#141210;box-sizing:border-box;position:relative">
+        <div style="padding:20px;display:flex;align-items:center;justify-content:space-between">
+          <div onClick="{{ goHome }}" style="cursor:pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size:16px;font-weight:800;color:#F7F1DE">टॅग स्कॅन करा</div>
+          <div style="width:22px"></div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div style="width:240px;height:240px;position:relative">
+            <div style="position:absolute;top:0;left:0;width:44px;height:44px;border-top:5px solid #B0BA99;border-left:5px solid #B0BA99;border-radius:12px 0 0 0"></div>
+            <div style="position:absolute;top:0;right:0;width:44px;height:44px;border-top:5px solid #B0BA99;border-right:5px solid #B0BA99;border-radius:0 12px 0 0"></div>
+            <div style="position:absolute;bottom:0;left:0;width:44px;height:44px;border-bottom:5px solid #B0BA99;border-left:5px solid #B0BA99;border-radius:0 0 0 12px"></div>
+            <div style="position:absolute;bottom:0;right:0;width:44px;height:44px;border-bottom:5px solid #B0BA99;border-right:5px solid #B0BA99;border-radius:0 0 12px 0"></div>
+          </div>
+        </div>
+        <div style="padding:0 32px 64px;text-align:center">
+          <div style="font-size:15px;font-weight:700;color:#F7F1DE">गाईचा टॅग चौकटीत ठेवा</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- COW DETAIL (5 buttons) -->
+    <sc-if value="{{ isCowDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ goHome }}" style="cursor:pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="font-size:19px;font-weight:800;color:#F7F1DE">टॅग क्रमांक {{ selectedTag }}</div>
+        </div>
+        <div style="flex:1;padding:18px;display:flex;flex-direction:column;gap:14px">
+          <div onClick="{{ openCowInfo }}" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;box-shadow:0 3px 10px rgba(78,34,15,.15);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:14px;background:#9D6638;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#F7F1DE" stroke-width="1.8"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#F7F1DE" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:700;color:#4E220F">गाईची माहिती</div>
+          </div>
+          <div onClick="{{ openBreeding }}" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;box-shadow:0 3px 10px rgba(78,34,15,.15);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:14px;background:#9D6638;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.4-9.3-8.6C1.2 8.4 3 5 6.4 5c1.9 0 3.4 1 4.6 2.6 1.2-1.6 2.7-2.6 4.6-2.6 3.4 0 5.2 3.4 3.7 6.4C19 15.6 12 20 12 20Z" fill="#F7F1DE"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:700;color:#4E220F">प्रजनन माहिती</div>
+          </div>
+          <div onClick="{{ openMilk }}" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;box-shadow:0 3px 10px rgba(78,34,15,.15);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:14px;background:#9D6638;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3s5.5 6.2 5.5 10.4a5.5 5.5 0 1 1-11 0C6.5 9.2 12 3 12 3Z" fill="#F7F1DE"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:700;color:#4E220F">दुधाची नोंद</div>
+          </div>
+          <div onClick="{{ openHealth }}" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;box-shadow:0 3px 10px rgba(78,34,15,.15);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:14px;background:#9D6638;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:700;color:#4E220F">आरोग्य अद्यतन</div>
+          </div>
+          <div onClick="{{ openDaily }}" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;box-shadow:0 3px 10px rgba(78,34,15,.15);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:14px;background:#9D6638;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="#F7F1DE" stroke-width="1.8"/><path d="M4 9.5h16M8 3v3M16 3v3" stroke="#F7F1DE" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:700;color:#4E220F">दैनंदिन माहिती</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- COW INFO -->
+    <sc-if value="{{ isCowInfo }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ backToCowDetail }}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-size:19px;font-weight:800;color:#F7F1DE">गाईची माहिती</div><div style="font-size:12px;font-weight:600;color:#B0BA99">टॅग क्रमांक {{ selectedTag }}</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:center">
+            <div style="width:96px;height:96px;border-radius:50%;background:#B0BA99;border:3px solid #4E220F;display:flex;align-items:center;justify-content:center">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M4 15c0-3 1.5-5 3-6-.3-1.2 0-2.5 1-3.3.6.7 1 1.5 1.1 2.3.6-.2 1.2-.3 1.9-.3s1.3.1 1.9.3c.1-.8.5-1.6 1.1-2.3 1 .8 1.3 2.1 1 3.3 1.5 1 3 3 3 6 0 3.3-3.6 6-8 6s-8-2.7-8-6Z" fill="#4E220F"/></svg>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ cowInfoFields }}" as="f" hint-placeholder-count="7">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ f.label }}</div>
+                <div style="font-size:15px;font-weight:800;color:#4E220F">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px 18px;flex-shrink:0"><div style="height:52px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;cursor:pointer">माहिती संपादित करा</div></div>
+      </div>
+    </sc-if>
+
+    <!-- BREEDING -->
+    <sc-if value="{{ isBreeding }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ backToCowDetail }}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-size:19px;font-weight:800;color:#F7F1DE">प्रजनन माहिती</div><div style="font-size:12px;font-weight:600;color:#B0BA99">टॅग क्रमांक {{ selectedTag }}</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#9D6638;border-radius:16px;border:2.5px solid #4E220F;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:14px;font-weight:700;color:#F7F1DE">गर्भधारणा स्थिती</div>
+            <div style="font-size:15px;font-weight:800;color:#F7F1DE;background:rgba(78,34,15,.35);border-radius:10px;padding:5px 12px">गाभण</div>
+          </div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ breedingFields }}" as="f" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ f.label }}</div>
+                <div style="font-size:15px;font-weight:800;color:#4E220F">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:#4E220F;margin-top:2px">विण्याचा इतिहास</div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ calvingHistory }}" as="h" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:14px;font-weight:700;color:#4E220F">{{ h.label }}</div>
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ h.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px 18px;flex-shrink:0"><div style="height:52px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;cursor:pointer">नवीन नोंद जोडा</div></div>
+      </div>
+    </sc-if>
+
+    <!-- MILK -->
+    <sc-if value="{{ isMilk }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ backToCowDetail }}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-size:19px;font-weight:800;color:#F7F1DE">दुधाची नोंद</div><div style="font-size:12px;font-weight:600;color:#B0BA99">टॅग क्रमांक {{ selectedTag }}</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;gap:12px">
+            <div style="flex:1;background:#fff;border-radius:16px;border:2.5px solid #4E220F;padding:14px;text-align:center">
+              <div style="font-size:12px;font-weight:700;color:#6b4a35">सकाळ</div>
+              <div style="font-size:22px;font-weight:800;color:#4E220F">7.2 लि</div>
+            </div>
+            <div style="flex:1;background:#fff;border-radius:16px;border:2.5px solid #4E220F;padding:14px;text-align:center">
+              <div style="font-size:12px;font-weight:700;color:#6b4a35">संध्याकाळ</div>
+              <div style="font-size:22px;font-weight:800;color:#4E220F">6.5 लि</div>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <div style="font-size:13px;font-weight:700;color:#6b4a35;margin-bottom:12px">गेल्या 7 दिवसांचा आलेख</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:80px">
+              <sc-for list="{{ milkTrend }}" as="d" hint-placeholder-count="7">
+                <div style="flex:1;background:#9D6638;border-radius:5px 5px 0 0;height:{{ d.h }}"></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ milkFields }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ f.label }}</div>
+                <div style="font-size:15px;font-weight:800;color:#4E220F">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px 18px;flex-shrink:0"><div style="height:52px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;cursor:pointer">आजची नोंद जोडा</div></div>
+      </div>
+    </sc-if>
+
+    <!-- HEALTH -->
+    <sc-if value="{{ isHealth }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ backToCowDetail }}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-size:19px;font-weight:800;color:#F7F1DE">आरोग्य अद्यतन</div><div style="font-size:12px;font-weight:600;color:#B0BA99">टॅग क्रमांक {{ selectedTag }}</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#B0BA99;border-radius:16px;border:2.5px solid #4E220F;padding:14px 18px;display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:14px;font-weight:700;color:#4E220F">सद्य आरोग्य स्थिती</div>
+            <div style="font-size:15px;font-weight:800;color:#F7F1DE;background:#4E220F;border-radius:10px;padding:5px 12px">निरोगी</div>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:#4E220F">लसीकरण वेळापत्रक</div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ vaccineFields }}" as="f" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:14px;font-weight:700;color:#4E220F">{{ f.label }}</div>
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:14px;font-weight:800;color:#4E220F">आजार व औषधोपचार नोंद</div>
+          <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:6px 18px;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+            <sc-for list="{{ illnessFields }}" as="f" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1.5px solid rgba(78,34,15,.15)">
+                <div style="font-size:14px;font-weight:700;color:#4E220F">{{ f.label }}</div>
+                <div style="font-size:13px;font-weight:600;color:#6b4a35">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px 18px;flex-shrink:0"><div style="height:52px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;cursor:pointer">नवीन नोंद जोडा</div></div>
+      </div>
+    </sc-if>
+
+    <!-- DAILY -->
+    <sc-if value="{{ isDaily }}" hint-placeholder-val="{{ false }}">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F1DE;box-sizing:border-box">
+        <div style="background:#4E220F;padding:20px;display:flex;align-items:center;gap:14px;flex-shrink:0">
+          <div onClick="{{ backToCowDetail }}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F7F1DE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-size:19px;font-weight:800;color:#F7F1DE">दैनंदिन माहिती</div><div style="font-size:12px;font-weight:600;color:#B0BA99">टॅग क्रमांक {{ selectedTag }} · आज, 12 जुलै</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ dailyFields }}" as="f" hint-placeholder-count="4">
+            <div style="background:#fff;border-radius:18px;border:2.5px solid #4E220F;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 8px rgba(78,34,15,.15)">
+              <div style="font-size:14px;font-weight:700;color:#4E220F">{{ f.label }}</div>
+              <div style="font-size:15px;font-weight:800;color:#9D6638">{{ f.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:16px 18px;flex-shrink:0"><div style="height:52px;border-radius:16px;background:#9D6638;border:2.5px solid #4E220F;color:#F7F1DE;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;cursor:pointer">आजची नोंद जोडा</div></div>
+      </div>
+    </sc-if>
+
+  </div>
+</x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'signin',
+    cows: [],
+  };
+
+  signIn = () => this.setState({ screen: 'home' });
+  goHome = () => this.setState({ screen: 'home' });
+  goScan = () => this.setState({ screen: 'scan' });
+  backToCowDetail = () => this.setState({ screen: 'cowDetail' });
+  openCowInfo = () => this.setState({ screen: 'cowInfo' });
+  openBreeding = () => this.setState({ screen: 'breeding' });
+  openMilk = () => this.setState({ screen: 'milk' });
+  openHealth = () => this.setState({ screen: 'health' });
+  openDaily = () => this.setState({ screen: 'daily' });
+
+  addCow = () => {
+    this.setState(s => {
+      const last = s.cows.length ? parseInt(s.cows[s.cows.length - 1].tag, 10) : 100;
+      const tag = String(last + Math.floor(Math.random() * 12) + 3);
+      return { cows: [...s.cows, { tag }] };
+    });
+  };
+
+  openCow = (tag) => this.setState({ screen: 'cowDetail', selectedTag: tag });
+
+  renderVals() {
+    const screen = this.state.screen;
+    const cows = this.state.cows.map(c => ({
+      tag: c.tag,
+      open: () => this.openCow(c.tag),
+    }));
+    return {
+      isSignIn: screen === 'signin',
+      isHome: screen === 'home',
+      isScan: screen === 'scan',
+      isCowDetail: screen === 'cowDetail',
+      isCowInfo: screen === 'cowInfo',
+      isBreeding: screen === 'breeding',
+      isMilk: screen === 'milk',
+      isHealth: screen === 'health',
+      isDaily: screen === 'daily',
+      hasCows: cows.length > 0,
+      isEmpty: cows.length === 0,
+      cows,
+      signIn: this.signIn,
+      goHome: this.goHome,
+      goScan: this.goScan,
+      addCow: this.addCow,
+      backToCowDetail: this.backToCowDetail,
+      openCowInfo: this.openCowInfo,
+      openBreeding: this.openBreeding,
+      openMilk: this.openMilk,
+      openHealth: this.openHealth,
+      openDaily: this.openDaily,
+      selectedTag: this.state.selectedTag ?? '',
+      cowInfoFields: [
+        { label: 'टॅग क्रमांक', value: this.state.selectedTag ?? '' },
+        { label: 'नाव', value: 'लक्ष्मी' },
+        { label: 'जात', value: 'गीर' },
+        { label: 'जन्मतारीख / वय', value: '३ वर्षे' },
+        { label: 'लिंग', value: 'मादी' },
+        { label: 'वजन', value: '३८० किलो' },
+        { label: 'वंशावळ', value: 'टॅग 92 (आई)' },
+      ],
+      breedingFields: [
+        { label: 'शेवटचे माजावर येणे', value: '२ मे' },
+        { label: 'रेतन तारीख', value: '५ मे' },
+        { label: 'अपेक्षित प्रसूती तारीख', value: '१२ फेब्रुवारी' },
+      ],
+      calvingHistory: [
+        { label: 'वासरू — नर', value: '१८ मार्च २०२४' },
+        { label: 'वासरू — मादी', value: '९ जानेवारी २०२३' },
+      ],
+      milkTrend: [
+        { h: '40%' }, { h: '55%' }, { h: '48%' }, { h: '62%' }, { h: '58%' }, { h: '70%' }, { h: '65%' },
+      ],
+      milkFields: [
+        { label: 'एकूण मासिक उत्पादन', value: '४१२ लि' },
+        { label: 'सरासरी उत्पादन', value: '१३.७ लि/दिवस' },
+        { label: 'फॅट %', value: '४.२%' },
+        { label: 'SNF %', value: '८.६%' },
+      ],
+      vaccineFields: [
+        { label: 'FMD लस', value: '१० जून' },
+        { label: 'जंतनाशक', value: '१ मे' },
+        { label: 'पुढील लस', value: '१० डिसेंबर' },
+      ],
+      illnessFields: [
+        { label: 'ताप — उपचार सुरू', value: '६ जुलै' },
+        { label: 'पशुवैद्यक भेट', value: 'डॉ. शिंदे, ७ जुलै' },
+      ],
+      dailyFields: [
+        { label: 'चारा/खाद्य नोंद', value: '१२ किलो' },
+        { label: 'पाणी वापर', value: '४५ लि' },
+        { label: 'तापमान तपासणी', value: '३८.५°C' },
+        { label: 'क्रियाकलाप टिपणी', value: 'सामान्य' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
