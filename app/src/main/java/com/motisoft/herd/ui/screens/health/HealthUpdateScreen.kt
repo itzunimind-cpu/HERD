@@ -48,7 +48,7 @@ fun HealthUpdateScreen(
 
     Scaffold(
         containerColor = Cream,
-        topBar = { HerdTopBar(title = "आरोग्य अद्यतन", onBack = onBack) },
+        topBar = { HerdTopBar(title = "आरोग्य अद्यतन", onBack = onBack, dark = true) },
     ) { padding ->
         Column(
             modifier = Modifier

@@ -41,7 +41,7 @@ fun CowInformationScreen(
 
     Scaffold(
         containerColor = Cream,
-        topBar = { HerdTopBar(title = "गाय माहिती", onBack = onBack) },
+        topBar = { HerdTopBar(title = "गाय माहिती", onBack = onBack, dark = true) },
     ) { padding ->
         val currentCow = cow
         Column(

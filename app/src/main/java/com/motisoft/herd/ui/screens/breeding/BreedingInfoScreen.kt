@@ -47,7 +47,7 @@ fun BreedingInfoScreen(
 
     Scaffold(
         containerColor = Cream,
-        topBar = { HerdTopBar(title = "प्रजनन माहिती", onBack = onBack) },
+        topBar = { HerdTopBar(title = "प्रजनन माहिती", onBack = onBack, dark = true) },
     ) { padding ->
         Column(
             modifier = Modifier

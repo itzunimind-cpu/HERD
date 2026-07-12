@@ -42,7 +42,7 @@ fun DailyInformationScreen(
 
     Scaffold(
         containerColor = Cream,
-        topBar = { HerdTopBar(title = "दैनंदिन माहिती", onBack = onBack) },
+        topBar = { HerdTopBar(title = "दैनंदिन माहिती", onBack = onBack, dark = true) },
     ) { padding ->
         Column(
             modifier = Modifier

@@ -6,11 +6,12 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,11 +64,17 @@ fun ScanTagScreen(onClose: () -> Unit) {
             PermissionRequest(onRequest = { permissionLauncher.launch(Manifest.permission.CAMERA) })
         }
 
-        IconButton(
-            onClick = onClose,
-            modifier = Modifier.align(Alignment.TopEnd).padding(20.dp),
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .padding(top = 12.dp, start = 4.dp, end = 4.dp),
+            contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Default.Close, contentDescription = "बंद करा", tint = Cream)
+            IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterStart)) {
+                Icon(Icons.Default.Close, contentDescription = "बंद करा", tint = Cream)
+            }
+            Text("टॅग स्कॅन करा", color = Cream, style = MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -95,16 +103,31 @@ private fun CameraPreview() {
     )
 }
 
+// Four corner brackets only, not a full frame - matches the design spec exactly.
 @Composable
 private fun ViewfinderOverlay() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Box(
-            modifier = Modifier
-                .size(240.dp)
-                .border(5.dp, Sage),
-        )
+        Canvas(modifier = Modifier.size(240.dp)) {
+            val strokeWidth = 5.dp.toPx()
+            val cornerLength = 36.dp.toPx()
+            val w = size.width
+            val h = size.height
+
+            // top-left
+            drawLine(Sage, Offset(0f, 0f), Offset(cornerLength, 0f), strokeWidth)
+            drawLine(Sage, Offset(0f, 0f), Offset(0f, cornerLength), strokeWidth)
+            // top-right
+            drawLine(Sage, Offset(w, 0f), Offset(w - cornerLength, 0f), strokeWidth)
+            drawLine(Sage, Offset(w, 0f), Offset(w, cornerLength), strokeWidth)
+            // bottom-left
+            drawLine(Sage, Offset(0f, h), Offset(cornerLength, h), strokeWidth)
+            drawLine(Sage, Offset(0f, h), Offset(0f, h - cornerLength), strokeWidth)
+            // bottom-right
+            drawLine(Sage, Offset(w, h), Offset(w - cornerLength, h), strokeWidth)
+            drawLine(Sage, Offset(w, h), Offset(w, h - cornerLength), strokeWidth)
+        }
         Text(
-            "गायीच्या टॅगवर कॅमेरा धरा",
+            "गाईचा टॅग चौकटीत ठेवा",
             color = Cream,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,

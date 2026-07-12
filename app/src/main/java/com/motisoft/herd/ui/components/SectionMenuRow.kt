@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +23,8 @@ import com.motisoft.herd.ui.theme.DarkBrown
 import com.motisoft.herd.ui.theme.HerdDimens
 import com.motisoft.herd.ui.theme.Terracotta
 
+// Each of the 5 section rows is its own tappable "large card" per the design
+// spec (18dp radius, 2.5dp dark-brown border, shadow) - not a flat list row.
 @Composable
 fun SectionMenuRow(
     icon: ImageVector,
@@ -31,28 +32,26 @@ fun SectionMenuRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(HerdDimens.IconBadgeSize)
-                .background(Terracotta, RoundedCornerShape(HerdDimens.IconBadgeRadius)),
-            contentAlignment = Alignment.Center,
+    HerdCard(modifier = modifier.fillMaxWidth().clickable(onClick = onClick)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Icon(icon, contentDescription = null, tint = Cream)
+            Box(
+                modifier = Modifier
+                    .size(HerdDimens.IconBadgeSize)
+                    .background(Terracotta, RoundedCornerShape(HerdDimens.IconBadgeRadius)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(icon, contentDescription = null, tint = Cream)
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = DarkBrown,
+                modifier = Modifier.weight(1f),
+            )
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = DarkBrown)
         }
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            color = DarkBrown,
-            modifier = Modifier.weight(1f),
-        )
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = DarkBrown)
     }
 }

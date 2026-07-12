@@ -46,7 +46,7 @@ fun MilkRecordScreen(
 
     Scaffold(
         containerColor = Cream,
-        topBar = { HerdTopBar(title = "दूध नोंद", onBack = onBack) },
+        topBar = { HerdTopBar(title = "दूध नोंद", onBack = onBack, dark = true) },
     ) { padding ->
         Column(
             modifier = Modifier
