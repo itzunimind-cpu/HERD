@@ -13,8 +13,17 @@ class AuthRepository @Inject constructor(
     val currentUserId: String?
         get() = supabase.auth.currentUserOrNull()?.id
 
+    val currentUserEmail: String?
+        get() = supabase.auth.currentUserOrNull()?.email
+
     val isSignedIn: Boolean
         get() = supabase.auth.currentUserOrNull() != null
+
+    // Suspends until the SDK finishes loading any session saved from a previous
+    // launch, so callers don't have to guess whether currentUserOrNull() is ready yet.
+    suspend fun awaitInitialization() {
+        supabase.auth.awaitInitialization()
+    }
 
     suspend fun signIn(email: String, password: String) {
         supabase.auth.signInWith(Email) {
@@ -25,5 +34,11 @@ class AuthRepository @Inject constructor(
 
     suspend fun signOut() {
         supabase.auth.signOut()
+    }
+
+    suspend fun updatePassword(newPassword: String) {
+        supabase.auth.updateUser {
+            password = newPassword
+        }
     }
 }

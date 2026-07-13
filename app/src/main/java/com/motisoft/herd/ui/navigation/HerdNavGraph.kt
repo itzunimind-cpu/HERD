@@ -15,10 +15,27 @@ import com.motisoft.herd.ui.screens.home.HomeScreen
 import com.motisoft.herd.ui.screens.milk.MilkRecordScreen
 import com.motisoft.herd.ui.screens.scan.ScanTagScreen
 import com.motisoft.herd.ui.screens.signin.SignInScreen
+import com.motisoft.herd.ui.screens.splash.SplashScreen
+import com.motisoft.herd.ui.screens.dashboard.DashboardScreen
 
 @Composable
 fun HerdNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = NavRoutes.SignIn.route) {
+    NavHost(navController = navController, startDestination = NavRoutes.Splash.route) {
+        composable(NavRoutes.Splash.route) {
+            SplashScreen(
+                onSignedIn = {
+                    navController.navigate(NavRoutes.Home.route) {
+                        popUpTo(NavRoutes.Splash.route) { inclusive = true }
+                    }
+                },
+                onSignedOut = {
+                    navController.navigate(NavRoutes.SignIn.route) {
+                        popUpTo(NavRoutes.Splash.route) { inclusive = true }
+                    }
+                },
+            )
+        }
+
         composable(NavRoutes.SignIn.route) {
             SignInScreen(
                 onSignInSuccess = {
@@ -34,6 +51,18 @@ fun HerdNavGraph(navController: NavHostController = rememberNavController()) {
                 onAddCow = { navController.navigate(NavRoutes.AddCow.route) },
                 onScan = { navController.navigate(NavRoutes.Scan.route) },
                 onCowClick = { tag -> navController.navigate(NavRoutes.CowDetail.build(tag)) },
+                onOpenDashboard = { navController.navigate(NavRoutes.Dashboard.route) },
+            )
+        }
+
+        composable(NavRoutes.Dashboard.route) {
+            DashboardScreen(
+                onBack = { navController.popBackStack() },
+                onSignedOut = {
+                    navController.navigate(NavRoutes.SignIn.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
         }
 

@@ -68,6 +68,8 @@ Navigation: single-stack. Back from the 5 section screens goes to Cow Detail (no
 6. Decide and implement tag-scan mechanism — still open, Scan screen is a real camera preview but has no decode logic.
 7. Build and test a sign-up flow (currently only one seed account exists, created directly in Supabase).
 8. Real device/farmer testing — nothing has been tested outside the Android emulator yet.
+9. ~~Persist login across app restarts~~ — done, see Changelog: Splash screen now gates routing on session state.
+10. ~~Farmer profile / dashboard screen~~ — done, see Changelog: new `profiles` table + Dashboard screen (name/phone/farm name, cow count, change password, sign out).
 
 ## Changelog
 
@@ -90,3 +92,10 @@ First hands-on run in the emulator surfaced visual differences from `design_hand
 - **Scan Tag screen**: close "X" was top-right with no title; spec wants it top-left with a centered "टॅग स्कॅन करा" title. The viewfinder was a full 240×240 square border; spec wants four corner brackets only (drawn with `Canvas`/`drawLine`, not a full frame). Instruction copy also corrected to the spec's exact Marathi text.
 
 Lesson for future screens: cross-check each screen against `design_handoff_livestock_app/README.md`'s per-screen Layout description line-by-line, not just the shared design tokens — the tokens were followed correctly, but a few per-screen layout specifics (header inversion, card-vs-flat-row treatment, exact icon shape) were missed on the first pass.
+
+**2026-07-13 — Persistent login + new Dashboard screen (not in the original 9-screen design spec).**
+
+- **Login now persists across app restarts.** `auth-kt` already saves the Supabase session to local storage by default and auto-refreshes it — the actual bug was `HerdNavGraph` hardcoding `Sign In` as the start destination on every cold start, ignoring any already-valid session. Added a `Splash` screen/`SplashViewModel` that calls `AuthRepository.awaitInitialization()` (suspends until the SDK finishes loading any saved session) then routes straight to Home or Sign In accordingly. `Splash` is now the real nav-graph start destination.
+- **New Dashboard screen**, reachable via an account icon on Home's header. Shows: total cow count, editable name/phone/farm-name, and the signed-in email (read-only). Deliberately does **not** show the password — Supabase never returns it to the client (it's hashed server-side), and displaying it would be a security anti-pattern regardless. A "Change Password" action was added instead, calling `AuthRepository.updatePassword` (`supabase.auth.updateUser { password = ... }`). This screen also adds the app's first Sign Out button — there wasn't one anywhere before.
+- **New `profiles` table** (`supabase/migrations/0002_profiles.sql`): one row per farmer (`id` = `auth.users.id`, `name`, `phone`, `farm_name`), RLS-protected the same way as every other table. `ProfileEntity`/`ProfileDao`/`ProfileRepository` mirror `CowRepository`'s existing local-first, dirty-flag, `SyncWorker`-retried pattern exactly. Room bumped to `version = 2` with a real `Migration(1, 2)` (not destructive) since the seed account already has cow data worth keeping.
+- Verified with `./gradlew assembleDebug` and by confirming the `profiles` table + RLS policy live on the `thitdaiznbuxkejvitex` project via the Supabase MCP tools. Not yet tested on-device/emulator (kill-and-relaunch to confirm Home is reached directly, edit-profile round-trip, password change, sign-out back-stack behavior).

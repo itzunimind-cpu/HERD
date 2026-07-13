@@ -9,6 +9,7 @@ import com.motisoft.herd.data.repository.CowRepository
 import com.motisoft.herd.data.repository.DailyLogRepository
 import com.motisoft.herd.data.repository.HealthRepository
 import com.motisoft.herd.data.repository.MilkRepository
+import com.motisoft.herd.data.repository.ProfileRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -21,6 +22,7 @@ class SyncWorker @AssistedInject constructor(
     private val milkRepository: MilkRepository,
     private val healthRepository: HealthRepository,
     private val dailyLogRepository: DailyLogRepository,
+    private val profileRepository: ProfileRepository,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
@@ -30,6 +32,7 @@ class SyncWorker @AssistedInject constructor(
         milkRepository.syncDirty()
         healthRepository.syncDirty()
         dailyLogRepository.syncDirty()
+        profileRepository.syncDirty()
         return Result.success()
     }
 }

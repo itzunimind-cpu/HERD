@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ fun HomeScreen(
     onAddCow: () -> Unit,
     onScan: () -> Unit,
     onCowClick: (String) -> Unit,
+    onOpenDashboard: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val cows by viewModel.cows.collectAsState()
@@ -68,7 +70,7 @@ fun HomeScreen(
         },
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize().padding(HerdDimens.ScreenPadding)) {
-            HomeHeader(onAddCow)
+            HomeHeader(onAddCow = onAddCow, onOpenDashboard = onOpenDashboard)
 
             if (cows.isEmpty()) {
                 EmptyState(onAddCow = onAddCow)
@@ -87,15 +89,20 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(onAddCow: () -> Unit) {
+private fun HomeHeader(onAddCow: () -> Unit, onOpenDashboard: () -> Unit) {
     androidx.compose.foundation.layout.Row(
         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text("आमचा गोठा", style = MaterialTheme.typography.headlineSmall, color = DarkBrown)
-        IconButton(onClick = onAddCow) {
-            Icon(Icons.Default.Add, contentDescription = "नवीन गाय जोडा", tint = Terracotta)
+        androidx.compose.foundation.layout.Row {
+            IconButton(onClick = onOpenDashboard) {
+                Icon(Icons.Default.AccountCircle, contentDescription = "डॅशबोर्ड", tint = Terracotta)
+            }
+            IconButton(onClick = onAddCow) {
+                Icon(Icons.Default.Add, contentDescription = "नवीन गाय जोडा", tint = Terracotta)
+            }
         }
     }
 }

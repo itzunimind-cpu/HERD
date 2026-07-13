@@ -1,8 +1,10 @@
 package com.motisoft.herd.ui.navigation
 
 sealed class NavRoutes(val route: String) {
+    data object Splash : NavRoutes("splash")
     data object SignIn : NavRoutes("sign_in")
     data object Home : NavRoutes("home")
+    data object Dashboard : NavRoutes("dashboard")
     data object Scan : NavRoutes("scan")
     data object AddCow : NavRoutes("add_cow")
 
