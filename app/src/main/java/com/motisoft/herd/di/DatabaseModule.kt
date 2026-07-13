@@ -6,6 +6,7 @@ import com.motisoft.herd.data.local.HerdDatabase
 import com.motisoft.herd.data.local.dao.BreedingDao
 import com.motisoft.herd.data.local.dao.CowDao
 import com.motisoft.herd.data.local.dao.DailyLogDao
+import com.motisoft.herd.data.local.dao.DailyMilkTotalDao
 import com.motisoft.herd.data.local.dao.HealthDao
 import com.motisoft.herd.data.local.dao.MilkDao
 import com.motisoft.herd.data.local.dao.ProfileDao
@@ -24,7 +25,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): HerdDatabase =
         Room.databaseBuilder(context, HerdDatabase::class.java, "herd.db")
-            .addMigrations(HerdDatabase.MIGRATION_1_2)
+            .addMigrations(HerdDatabase.MIGRATION_1_2, HerdDatabase.MIGRATION_2_3)
             .build()
 
     @Provides
@@ -44,4 +45,7 @@ object DatabaseModule {
 
     @Provides
     fun provideProfileDao(db: HerdDatabase): ProfileDao = db.profileDao()
+
+    @Provides
+    fun provideDailyMilkTotalDao(db: HerdDatabase): DailyMilkTotalDao = db.dailyMilkTotalDao()
 }

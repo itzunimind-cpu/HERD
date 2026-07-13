@@ -10,6 +10,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.daysUntil
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,6 +44,28 @@ class BreedingRepository @Inject constructor(
         breedingDao.getDirtyCalvingHistory().forEach { pushCalvingEntry(it) }
     }
 
+    // A cow is "due" every 21 days (the bovine estrus cycle length) counted from
+    // whichever is more recent: her last recorded heat, or her last calving (heat
+    // resumes some time after giving birth). Stops once a positive pregnancy test
+    // is recorded, since a confirmed-pregnant cow isn't cycling.
+    suspend fun findCowsDueForHeatCheck(today: LocalDate): List<Pair<String, String>> {
+        val due = mutableListOf<Pair<String, String>>()
+        breedingDao.getAllInfo().forEach { info ->
+            val confirmedPregnant = info.pregnancyStatus == "गाभण" && info.pregnancyTestDate != null
+            if (confirmedPregnant) return@forEach
+
+            val latestCalving = breedingDao.getLatestCalvingDate(info.cowTag)
+            val anchor = listOfNotNull(info.lastHeatDate, latestCalving).maxOrNull() ?: return@forEach
+
+            val daysSince = anchor.daysUntil(today)
+            if (daysSince > 0 && daysSince % 21 == 0) {
+                val name = cowDao.getByTag(info.cowTag)?.name ?: info.cowTag
+                due.add(info.cowTag to name)
+            }
+        }
+        return due
+    }
+
     private suspend fun pushInfo(info: BreedingInfoEntity) {
         val ownerId = authRepository.currentUserId ?: return
         val cowId = cowDao.getByTag(info.cowTag)?.remoteId ?: return
@@ -53,7 +77,9 @@ class BreedingRepository @Inject constructor(
                 pregnancyStatus = info.pregnancyStatus,
                 lastHeatDate = info.lastHeatDate,
                 inseminationDate = info.inseminationDate,
+                pregnancyTestDate = info.pregnancyTestDate,
                 expectedCalvingDate = info.expectedCalvingDate,
+                semenBreed = info.semenBreed,
             )
             val result = supabase.from("breeding_info")
                 .upsert(dto) { onConflict = "cow_id"; select() }

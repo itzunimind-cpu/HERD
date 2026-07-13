@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.motisoft.herd.data.repository.BreedingRepository
 import com.motisoft.herd.data.repository.CowRepository
 import com.motisoft.herd.data.repository.DailyLogRepository
+import com.motisoft.herd.data.repository.DailyMilkTotalRepository
 import com.motisoft.herd.data.repository.HealthRepository
 import com.motisoft.herd.data.repository.MilkRepository
 import com.motisoft.herd.data.repository.ProfileRepository
@@ -23,6 +24,7 @@ class SyncWorker @AssistedInject constructor(
     private val healthRepository: HealthRepository,
     private val dailyLogRepository: DailyLogRepository,
     private val profileRepository: ProfileRepository,
+    private val dailyMilkTotalRepository: DailyMilkTotalRepository,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
@@ -33,6 +35,7 @@ class SyncWorker @AssistedInject constructor(
         healthRepository.syncDirty()
         dailyLogRepository.syncDirty()
         profileRepository.syncDirty()
+        dailyMilkTotalRepository.syncDirty()
         return Result.success()
     }
 }

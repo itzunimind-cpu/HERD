@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +56,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val cows by viewModel.cows.collectAsState()
+    var showQuickMilkSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Cream,
@@ -70,7 +75,11 @@ fun HomeScreen(
         },
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize().padding(HerdDimens.ScreenPadding)) {
-            HomeHeader(onAddCow = onAddCow, onOpenDashboard = onOpenDashboard)
+            HomeHeader(
+                onAddCow = onAddCow,
+                onOpenDashboard = onOpenDashboard,
+                onOpenQuickMilk = { showQuickMilkSheet = true },
+            )
 
             if (cows.isEmpty()) {
                 EmptyState(onAddCow = onAddCow)
@@ -86,10 +95,21 @@ fun HomeScreen(
             }
         }
     }
+
+    if (showQuickMilkSheet) {
+        QuickMilkEntrySheet(
+            cows = cows,
+            onDismiss = { showQuickMilkSheet = false },
+            onCowSelected = { tag ->
+                showQuickMilkSheet = false
+                onCowClick(tag)
+            },
+        )
+    }
 }
 
 @Composable
-private fun HomeHeader(onAddCow: () -> Unit, onOpenDashboard: () -> Unit) {
+private fun HomeHeader(onAddCow: () -> Unit, onOpenDashboard: () -> Unit, onOpenQuickMilk: () -> Unit) {
     androidx.compose.foundation.layout.Row(
         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,6 +119,9 @@ private fun HomeHeader(onAddCow: () -> Unit, onOpenDashboard: () -> Unit) {
         androidx.compose.foundation.layout.Row {
             IconButton(onClick = onOpenDashboard) {
                 Icon(Icons.Default.AccountCircle, contentDescription = "डॅशबोर्ड", tint = Terracotta)
+            }
+            IconButton(onClick = onOpenQuickMilk) {
+                Icon(Icons.Default.WaterDrop, contentDescription = "आजचे दूध नोंदवा", tint = Terracotta)
             }
             IconButton(onClick = onAddCow) {
                 Icon(Icons.Default.Add, contentDescription = "नवीन गाय जोडा", tint = Terracotta)

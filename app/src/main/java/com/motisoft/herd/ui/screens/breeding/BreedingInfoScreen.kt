@@ -43,6 +43,7 @@ fun BreedingInfoScreen(
 ) {
     val info by viewModel.info.collectAsState()
     val calvingHistory by viewModel.calvingHistory.collectAsState()
+    val draft by viewModel.draft.collectAsState()
     var showAddSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -72,9 +73,42 @@ fun BreedingInfoScreen(
             }
 
             HerdCard(modifier = Modifier.fillMaxWidth()) {
-                LabelValueRow("शेवटची माजाची तारीख", info?.lastHeatDate?.toString() ?: "-")
-                LabelValueRow("रेतन तारीख", info?.inseminationDate?.toString() ?: "-")
-                LabelValueRow("अपेक्षित वेतांची तारीख", info?.expectedCalvingDate?.toString() ?: "-")
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("प्रजनन तपशील", style = MaterialTheme.typography.titleSmall, color = DarkBrown)
+                    HerdTextField(
+                        value = draft.lastHeatDate,
+                        onValueChange = viewModel::onLastHeatDateChange,
+                        label = "शेवटची माजाची तारीख",
+                        placeholder = "YYYY-MM-DD",
+                    )
+                    HerdTextField(
+                        value = draft.inseminationDate,
+                        onValueChange = viewModel::onInseminationDateChange,
+                        label = "रेतन तारीख",
+                        placeholder = "YYYY-MM-DD",
+                    )
+                    HerdTextField(
+                        value = draft.semenBreed,
+                        onValueChange = viewModel::onSemenBreedChange,
+                        label = "वीर्य/जातीचा प्रकार",
+                    )
+                    HerdTextField(
+                        value = draft.pregnancyTestDate,
+                        onValueChange = viewModel::onPregnancyTestDateChange,
+                        label = "गर्भ तपासणी तारीख",
+                        placeholder = "YYYY-MM-DD",
+                    )
+                    HerdTextField(
+                        value = draft.expectedCalvingDate,
+                        onValueChange = viewModel::onExpectedCalvingDateChange,
+                        label = "अपेक्षित वेतांची तारीख (अंदाजे)",
+                        placeholder = "YYYY-MM-DD",
+                    )
+                    draft.savedMessage?.let {
+                        Text(it, style = MaterialTheme.typography.labelMedium, color = Terracotta)
+                    }
+                    PrimaryButton(text = "जतन करा", onClick = viewModel::saveDetails, loading = draft.isSaving)
+                }
             }
 
             Text(

@@ -2,6 +2,9 @@ package com.motisoft.herd.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.motisoft.herd.data.notifications.NotificationSettingsRepository
+import com.motisoft.herd.data.notifications.ReminderScheduler
+import com.motisoft.herd.data.notifications.ReminderSession
 import com.motisoft.herd.data.repository.AuthRepository
 import com.motisoft.herd.data.repository.CowRepository
 import com.motisoft.herd.data.repository.ProfileRepository
@@ -26,6 +29,10 @@ data class DashboardUiState(
     val isChangingPassword: Boolean = false,
     val passwordError: String? = null,
     val passwordChangedMessage: String? = null,
+    val morningReminderHour: Int = 7,
+    val morningReminderMinute: Int = 0,
+    val eveningReminderHour: Int = 18,
+    val eveningReminderMinute: Int = 0,
 )
 
 @HiltViewModel
@@ -33,9 +40,19 @@ class DashboardViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
     private val cowRepository: CowRepository,
+    private val notificationSettingsRepository: NotificationSettingsRepository,
+    private val reminderScheduler: ReminderScheduler,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(DashboardUiState(email = authRepository.currentUserEmail.orEmpty()))
+    private val _uiState = MutableStateFlow(
+        DashboardUiState(
+            email = authRepository.currentUserEmail.orEmpty(),
+            morningReminderHour = notificationSettingsRepository.getTime(ReminderSession.MORNING).hour,
+            morningReminderMinute = notificationSettingsRepository.getTime(ReminderSession.MORNING).minute,
+            eveningReminderHour = notificationSettingsRepository.getTime(ReminderSession.EVENING).hour,
+            eveningReminderMinute = notificationSettingsRepository.getTime(ReminderSession.EVENING).minute,
+        ),
+    )
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
     init {
@@ -110,5 +127,17 @@ class DashboardViewModel @Inject constructor(
             authRepository.signOut()
             onDone()
         }
+    }
+
+    fun setMorningReminderTime(hour: Int, minute: Int) {
+        notificationSettingsRepository.setTime(ReminderSession.MORNING, hour, minute)
+        reminderScheduler.reschedule(ReminderSession.MORNING)
+        _uiState.update { it.copy(morningReminderHour = hour, morningReminderMinute = minute) }
+    }
+
+    fun setEveningReminderTime(hour: Int, minute: Int) {
+        notificationSettingsRepository.setTime(ReminderSession.EVENING, hour, minute)
+        reminderScheduler.reschedule(ReminderSession.EVENING)
+        _uiState.update { it.copy(eveningReminderHour = hour, eveningReminderMinute = minute) }
     }
 }

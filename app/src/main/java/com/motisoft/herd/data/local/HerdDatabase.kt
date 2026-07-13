@@ -8,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.motisoft.herd.data.local.dao.BreedingDao
 import com.motisoft.herd.data.local.dao.CowDao
 import com.motisoft.herd.data.local.dao.DailyLogDao
+import com.motisoft.herd.data.local.dao.DailyMilkTotalDao
 import com.motisoft.herd.data.local.dao.HealthDao
 import com.motisoft.herd.data.local.dao.MilkDao
 import com.motisoft.herd.data.local.dao.ProfileDao
@@ -15,6 +16,7 @@ import com.motisoft.herd.data.local.entity.BreedingInfoEntity
 import com.motisoft.herd.data.local.entity.CalvingHistoryEntity
 import com.motisoft.herd.data.local.entity.CowEntity
 import com.motisoft.herd.data.local.entity.DailyLogEntity
+import com.motisoft.herd.data.local.entity.DailyMilkTotalEntity
 import com.motisoft.herd.data.local.entity.HealthStatusEntity
 import com.motisoft.herd.data.local.entity.IllnessLogEntity
 import com.motisoft.herd.data.local.entity.MilkRecordEntity
@@ -32,8 +34,9 @@ import com.motisoft.herd.data.local.entity.VaccinationEntity
         IllnessLogEntity::class,
         DailyLogEntity::class,
         ProfileEntity::class,
+        DailyMilkTotalEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -44,6 +47,7 @@ abstract class HerdDatabase : RoomDatabase() {
     abstract fun healthDao(): HealthDao
     abstract fun dailyLogDao(): DailyLogDao
     abstract fun profileDao(): ProfileDao
+    abstract fun dailyMilkTotalDao(): DailyMilkTotalDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -58,6 +62,27 @@ abstract class HerdDatabase : RoomDatabase() {
                         `updatedAt` INTEGER NOT NULL,
                         `dirty` INTEGER NOT NULL,
                         PRIMARY KEY(`ownerId`)
+                    )
+                    """.trimIndent(),
+                )
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `breeding_info` ADD COLUMN `pregnancyTestDate` TEXT")
+                db.execSQL("ALTER TABLE `breeding_info` ADD COLUMN `semenBreed` TEXT")
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `daily_milk_totals` (
+                        `ownerId` TEXT NOT NULL,
+                        `date` TEXT NOT NULL,
+                        `morningTotal` REAL,
+                        `eveningTotal` REAL,
+                        `remoteId` TEXT,
+                        `updatedAt` INTEGER NOT NULL,
+                        `dirty` INTEGER NOT NULL,
+                        PRIMARY KEY(`ownerId`, `date`)
                     )
                     """.trimIndent(),
                 )

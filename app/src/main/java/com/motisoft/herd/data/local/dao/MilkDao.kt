@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.motisoft.herd.data.local.entity.MilkRecordEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 @Dao
 interface MilkDao {
@@ -13,6 +14,9 @@ interface MilkDao {
 
     @Query("SELECT * FROM milk_records WHERE dirty = 1")
     suspend fun getDirty(): List<MilkRecordEntity>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM milk_records WHERE date = :date)")
+    suspend fun existsForDate(date: LocalDate): Boolean
 
     @Upsert
     suspend fun upsert(record: MilkRecordEntity)

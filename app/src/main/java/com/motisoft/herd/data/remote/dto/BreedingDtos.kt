@@ -13,7 +13,9 @@ data class BreedingInfoDto(
     @SerialName("pregnancy_status") val pregnancyStatus: String,
     @SerialName("last_heat_date") val lastHeatDate: LocalDate? = null,
     @SerialName("insemination_date") val inseminationDate: LocalDate? = null,
+    @SerialName("pregnancy_test_date") val pregnancyTestDate: LocalDate? = null,
     @SerialName("expected_calving_date") val expectedCalvingDate: LocalDate? = null,
+    @SerialName("semen_breed") val semenBreed: String? = null,
     @SerialName("updated_at") val updatedAt: Instant? = null,
 )
 
